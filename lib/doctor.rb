@@ -1,9 +1,10 @@
 require 'pg'
 
 class Doctor
-  attr_accessor :name, :specialty, :insurance, :max_clients
+  attr_accessor :id, :name, :specialty, :insurance, :max_clients
 
   def initialize(attributes)
+    @id = attributes[:id]
     @name = attributes[:name]
     @specialty = attributes[:specialty]
     @insurance = attributes[:insurance]
@@ -18,11 +19,12 @@ class Doctor
     db_entry = DB.exec("SELECT * FROM doctors;")
     doctors = []
     db_entry.each do |doctor|
+      id = doctor['id']
       name = doctor['name']
       specialty = doctor['specialty']
       insurance = doctor['insurance']
       max_clients = doctor['max_clients']
-      doctors << self.new({:name => name, :specialty => specialty, :insurance => insurance, :max_clients => max_clients})
+      doctors << self.new({:id => id, :name => name, :specialty => specialty, :insurance => insurance, :max_clients => max_clients})
     end
     doctors
   end
@@ -35,4 +37,19 @@ class Doctor
     end
     names
   end
+
+  def self.getID(doctor)
+    DB.exec("SELECT id FROM doctors WHERE name ='#{doctor}';").first['id']
+  end
+
+  def self.table
+    self.all.each do |doctor|
+
+      p doctor.name + " has " << DB.exec("SELECT COUNT(id) FROM patients WHERE doctor_id = '#{doctor.id}';").first['count'] + " patients."
+    end
+  end
+
 end
+
+
+

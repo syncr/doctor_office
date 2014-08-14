@@ -22,7 +22,8 @@ def start
   puts "4 = list patients\n"
 
   puts "5 = new appointment"
-  puts "6 = list appointment"
+  puts "6 = show doc chomp load"
+  puts "7 = total cost"
 
   menu1
 end
@@ -52,8 +53,10 @@ def menu1
       puts "Ok, your doctor has been created"
       # menu3
     when '6'
-      new_appointment
-      puts "Ok, your doctor has been created"
+      doc_table
+      # menu3
+    when '7'
+      sum_cost
       # menu3
     else "sorry I don't understand that"
     menu1
@@ -97,9 +100,23 @@ def new_appointment
   puts "Please provide a cost per chomp'ointment:"
   cost = gets.chomp
 
-  Appointment.schedule(doctor, patient, date, cost)
+  Appointment.store_db(Doctor.getID(doctor), Patient.getID(patient), date, cost)
   puts "#{doctor} will see #{patient} on #{date} for #{cost}."
   start
+end
+
+def doc_table
+  puts 'Here is a list of all the doctors and their current chomp load'
+  Doctor.table
+end
+
+def sum_cost
+  puts 'Calculate the charges from a particular doctor'
+  puts 'Select the doctor name:'
+  puts Doctor.names
+  doctor = gets.chomp
+  doctor_id = Doctor.getID(doctor)
+  puts "This doctor charged #{Insurance.cost(doctor_id)}"
 end
 
 clear

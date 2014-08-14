@@ -15,15 +15,13 @@ describe Patient do
     expect(DB.exec("SELECT * FROM patients;").first['name']).to eq "Betty Big Brain"
   end
 
-    it "lists all Patients from data in DB" do
+  it "lists all Patients from data in DB" do
     new_patient1 = Patient.new({:name => "Betty Big Brain", :birthdate =>'1980-11-11'})
     new_patient2 = Patient.new({:name => "Bob Beefy Leg", :birthdate =>'1987-11-11'})
     new_patient3 = Patient.new({:name => "Larry Tasty Arms", :birthdate =>'1995-11-11'})
     Patient.store_db(new_patient1.name, new_patient1.birthdate, new_patient1.doctor_id)
     Patient.store_db(new_patient2.name, new_patient2.birthdate, new_patient2.doctor_id)
     Patient.store_db(new_patient3.name, new_patient3.birthdate, new_patient3.doctor_id)
-
     expect(DB.exec("SELECT name FROM patients;").first['name']).to eq "Betty Big Brain"
   end
-
 end

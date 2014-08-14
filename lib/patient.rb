@@ -1,4 +1,5 @@
 require 'pg'
+require 'pry'
 
 class Patient
   attr_accessor :name, :birthdate, :doctor_id
@@ -23,5 +24,7 @@ class Patient
     names
   end
 
-
+  def self.getID(patient)
+    DB.exec("SELECT id FROM patients WHERE name ='#{patient}';").first['id']
+  end
 end
