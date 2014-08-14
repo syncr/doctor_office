@@ -1,6 +1,5 @@
 require 'pg'
 
-
 class Doctor
   attr_accessor :name, :specialty, :insurance, :max_clients
 
@@ -8,16 +7,32 @@ class Doctor
     @name = attributes[:name]
     @specialty = attributes[:specialty]
     @insurance = attributes[:insurance]
-    @max_clients = attributes[:max_clients]
+    @max_clients = attributes[:max_clients] || 0
   end
 
-  def self.add_doctor_db(name, specialty, insurance, max_clients)
+  def self.store_db(name, specialty, insurance, max_clients)
+    DB.exec("INSERT INTO doctors (name, specialty, insurance, max_clients) VALUES ('#{name}', '#{specialty}', '#{insurance}', #{max_clients});")
+  end
 
-    # DB.exec("INSERT INTO doctors (name, specialty, insurance, max_clients) VALUES ('#{@name}', '#{@specialty}', '#{@insurance}', #{@max_clients});")
-    DB.exec("INSERT INTO doctors (name) VALUES ('#{@name}');")
-    p name
-    p "#{@name}"
+  def self.all
+    db_entry = DB.exec("SELECT * FROM doctors;")
+    doctors = []
+    db_entry.each do |doctor|
+      name = doctor['name']
+      specialty = doctor['specialty']
+      insurance = doctor['insurance']
+      max_clients = doctor['max_clients']
+      doctors << self.new({:name => name, :specialty => specialty, :insurance => insurance, :max_clients => max_clients})
+    end
+    doctors
+  end
 
-    # DB.exec("INSERT INTO tasks   (name, list_id, due_date)                 VALUES ('#{@name}', #{@list_id}, '#{@due_date}');")
+  def self.names
+    doctors = self.all
+    names = []
+    doctors.each do |doctor|
+      names << doctor.name
+    end
+    names
   end
 end

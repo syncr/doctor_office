@@ -1,6 +1,6 @@
 require 'pg'
 
-class Insurance
+class Specialty
   attr_accessor :name
 
   def initialize(attributes)
